@@ -1,6 +1,7 @@
 # ブロック崩し
 from tkinter import *
 import random
+from timer import Timer
 import datetime
 
 # ゲーム中で使う変数の一覧
@@ -16,10 +17,14 @@ win = Tk()
 cv = Canvas(win, width = 600, height = 400)
 cv.pack()
 
+# タイマーの用意
+timer = Timer()
+
 # ゲームの初期化
 def init_game():
     global is_gameover, point
     is_gameover = False
+
     ball["y"] = 500
     ball["diry"] = -10
     point = 0
@@ -77,14 +82,13 @@ def move_ball():
         if random.randint(0, 1) == 0: ball["dirx"] *= -1
         ball["diry"] *= -1
         point += 10
-
-    # 時間の表示
-        date = datetime.datetime.now()
-        win.title("GAME SCORE = " + str(point)+"DATE TIME = " + str(date))
-
+        # 開始時刻からの経過時間を取得
+        now = timer.update()
+        win.title("GAME SCORE = " + str(point) + " TIME = " + str(now))
     # ゲームオーバー？
     if by >= 400:
-        win.title("Game Over!! score=" + str(point))
+        now = timer.update()
+        win.title("Game Over!! score=" + str(point) + " TIME = " + str(now))
         is_gameover = True
     if 0 <= bx <= 600: ball["x"] = bx
     if 0 <= by <= 400: ball["y"] = by
@@ -92,6 +96,10 @@ def move_ball():
 def game_loop():
     draw_objects()
     move_ball()
+    if is_gameover == False:
+        # 開始時刻からの経過時間を取得
+        now = timer.update()
+        win.title("GAME SCORE = " + str(point) + " TIME = " + str(now))
     win.after(50, game_loop)
 
 # マウスイベントの処理
