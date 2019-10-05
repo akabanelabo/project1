@@ -1,2 +1,2 @@
-## project1
-シャイニングフィンガー！！
+# project1
+shinning
